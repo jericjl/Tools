@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>Joining Computer to Domain</title>
+</head>
+<STYLE>
+  html, body {
+  background color: #e0e0e0
+   
+   font-size: 90%;
+   line-height: 2.1em;
+   margin: 0;
+   padding: 0;
+  }
+  .top{
+    background-color: #004ecb;
+    padding: 2px;
+    margin-bottom: 10px;
+  }
+  .submit-btn{
+    font-family: Arial, Helvetica, sans-serif;
+    height: 40px;
+    width: 400px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  label{
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+  }
+  td{
+    padding: 2px;
+  }
+  table{
+    margin-left: 10px;
+  }
+  h2 {font-family: Arial;
+   color: #e0e0e0;
+   font-size: 24px;
+   text-transform: uppercase;
+   text-align: center;
+  }
+  #h2 {font-family: Arial;
+   color: #fff;
+   font-size: 1.5em;
+   text-transform: uppercase;
+   text-align: left;
+  }
+  h3 
+  {font-family: Arial;
+   color: #666;
+   font-size: 1em;
+   text-transform: uppercase;
+   text-align: center;
+  }
+  </STYLE>
+<SCRIPT language="VBscript">
+  Sub Window_onload()
+Me.ResizeTo 600,380
+End Sub
+
+    Sub Runscript( )
+    dim pcname,domain,newhostname,command,WshShell,Temp,ou
+            pcname = document.getElementById( "pcname" ).value
+            domain = document.getElementById("domain").value
+            ou     = document.getElementById("ou").value
+
+            If pcname = "" THEN
+              msgbox "Please fill out the New computer Name"
+              Exit Sub
+            End if
+
+            Set WshShell = CreateObject("WScript.Shell")
+            Temp = WshShell.ExpandEnvironmentStrings("%Temp%")
+            command = "$HostName = '" + pcname + "'" + vbCrLf +" $DomainToJoin = '" + domain + "'"+ vbCrLf +"$OU = '" + ou + "' " + vbCrLf + "Add-Computer -DomainName $DomainToJoin -OUPath $OU -NewName $HostName -Restart"
+            Set objFSO = CreateObject("Scripting.FileSystemObject")
+            Set objFile = objFSO.CreateTextFile(Temp &"\DomainJoin.ps1" , 1)
+            Strline = command
+            objFile.Writeline Strline
+            objFile.Close
+            WshShell.Run "powershell.exe -ExecutionPolicy Unrestricted -File %Temp%\DomainJoin.ps1 2>&1 | tee -filePath c:\results.txt"
+    End Sub
+
+    
+   </script>
+
+
+
+
+<body>
+
+  <HTA:APPLICATION
+   ID = "oApp"
+   APPLICATIONNAME = "Example"
+   BORDER = "thick"
+   CAPTION = "yes"
+   ICON = "app.ico"
+   SHOWINTASKBAR = "yes"
+   SINGLEINSTANCE = "yes"
+   SYSMENU = "yes"
+   WINDOWSTATE = "normal"
+   SCROLL = "no"
+   SCROLLFLAT = "no"
+   VERSION = "1.0"
+   INNERBORDER = "no"
+   SELECTION = "no"
+   MAXIMIZEBUTTON = "no"
+   MINIMIZEBUTTON = "yes"
+   NAVIGABLE = "yes"
+   CONTEXTMENU = "yes"
+   BORDERSTYLE = "normal"
+   >
+   <div class="top">
+ <h2>JOIN DOMAIN</h2></div>
+<table>
+    <tr> 
+   <td><label>NEW COMPUTER NAME : </label> </td>
+   <td><input id="pcname" name="pcname" type="Text" style="width:300px;height:30px;font-size:20px;" name="Computer_name"></td>
+   </tr>
+
+   <tr>
+   <td><label>DOMAIN NAME </label></td>
+   <td><input id="domain" name="domain" type="text" style="width:300px;height:30px;font-size:20px;" value="DOMAIN.LOCAL" style="width:300px;" readonly></td></tr>
+   <tr>
+   <td><label>ORGANIZATIONAL UNIT (OU)</td>
+   <td><input id="ou" name="ou" type="text" style="width:300px;height:30px;font-size:20px;" value="OU=child,OU=parent,DC=domain,DC=local" style="width:300px;" readonly></label></td><td>
+   </td></tr>
+   <tr>
+   <td>
+
+   </td></td>
+
+
+
+</table>
+<center><input class="submit-btn" type="button" name="btnClick" value="SUBMIT" onclick="vbscript:Runscript( )"></center>
+
+</body>
+</html>
+
