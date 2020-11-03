@@ -1,3 +1,16 @@
+########################################################
+# Name: CopyFile2NetworkPC                              
+# Author : Jeric Lambit    
+# Date Created: 
+# Version:
+# Doc: 
+# Version 
+########################################################
+
+# GitHub : https://github.com/jericjl
+# Linkedin : https://www.linkedin.com/in/lambitjeric/
+
+########################################################
 
 #Subnet / Network
 $subnet = "172.16.14"
@@ -11,18 +24,25 @@ $subnet = "172.16.14"
         if ($val -eq $null) 
             {
             
-            #Run command / Function here 
+            #Run command / Function here if null value
                 
             }
         else 
             {
             #Delete the Drive letter to make sure that is does not exist
-             net use Y: /delete     #Map the Drive to the PC
-             net use Y: \\$network\Users\admin-user\Desktop /user:$network\admin-user password_here  
-             Copy-Item 'C:\File.txt' -destination "\\$network\Users\admin-user\Desktop" -recurse         #Copy the file to specified location
-             net use Y: /delete             #Delete the Drive from mapping
+             net use Y: /delete     
+             
+             #Map the Drive to the PC
+             #change the windows user account and save location depending on your preference
+             net use Y: \\$network\Users\admin-user\Desktop /user:$network\admin-user password_here   
+             
+             #Copy the file to specified location, modify depending on your preference
+             Copy-Item 'C:\File.txt' -destination "\\$network\Users\admin-user\Desktop" -recurse
+
+             #Delete the Drive from mapping         
+             net use Y: /delete             
            }
-           #This is where the variable autoincrement depends on the number of maximum value in for loop
+           #This is where the value autoincrement depends on the number of maximum value in the for loop
            $num++
 
  
